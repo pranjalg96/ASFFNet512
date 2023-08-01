@@ -38,7 +38,7 @@ if __name__ == '__main__':
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     print(device)
-    FaceDetection = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D, device=device)
+    FaceDetection = face_alignment.FaceAlignment(face_alignment.LandmarksType.TWO_D, device=device)
 
     ShowLandmarkFace = True # check the landmark detection performance
     IdPath = args.ids_path

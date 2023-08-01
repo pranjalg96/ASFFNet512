@@ -10,7 +10,7 @@ import argparse
 import os
 import math
 from torchvision.transforms.functional import normalize
-FaceDetection = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D, device='cuda' if torch.cuda.is_available() else 'cpu')
+FaceDetection = face_alignment.FaceAlignment(face_alignment.LandmarksType.TWO_D, device='cuda' if torch.cuda.is_available() else 'cpu')
 
 def cal_sim(lq_landmarks, ref_landmark):
     weight_eye = 1.01
@@ -77,7 +77,7 @@ def optimal_reference_selection(lq_landmarks, hq_landmark_paths):
         Landmarks = []
         with open(osp.join(hq_landmark_paths, path),'r') as f:
             for line in f:
-                tmp = [np.float(i) for i in line.split(' ') if i != '\n']
+                tmp = [float(i) for i in line.split(' ') if i != '\n']
                 Landmarks.append(tmp)
         Landmarks = np.array(Landmarks) #
         RefsLands.append(np.reshape(Landmarks, [-1, 2]))
@@ -173,6 +173,7 @@ if __name__ == '__main__':
         check_lq = lq * 0.5 + 0.5
         check_lq = check_lq.squeeze(0).permute(1, 2, 0).flip(2) # RGB->BGR
         check_lq = np.clip(check_lq.float().cpu().numpy(), 0, 1) * 255.0
+
         check_ref = ref * 0.5 + 0.5
         check_ref = check_ref.squeeze(0).permute(1, 2, 0).flip(2) # RGB->BGR
         check_ref = np.clip(check_ref.float().cpu().numpy(), 0, 1) * 255.0

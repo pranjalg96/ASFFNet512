@@ -1,5 +1,6 @@
 import os
 
+import torch
 import numpy as np
 import argparse
 import scipy.ndimage
@@ -96,7 +97,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='A simple script to extract eye and mouth coordinates from a face image.')
     parser.add_argument('-s', '--src', default='./ObamaRaw', help='directory of raw images')
-    parser.add_argument('-d', '--dst', default='./HQReferences/Obama', help='directory of aligned images')
+    parser.add_argument('-d', '--dst', default='./HQReferences/Obama_gen', help='directory of aligned images')
     parser.add_argument('-o', '--output_size', default=512, type=int, help='size of aligned output (default: 256)')
     parser.add_argument('-t', '--transform_size', default=1024, type=int, help='size of aligned transform (default: 256)')
     parser.add_argument('--no_padding', action='store_false', help='no padding')
@@ -104,8 +105,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     os.makedirs(args.dst, exist_ok=True)
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-    landmarks_detector = face_alignment.FaceAlignment(face_alignment.LandmarksType._3D, flip_input=False)
+    landmarks_detector = face_alignment.FaceAlignment(face_alignment.LandmarksType.THREE_D, flip_input=False, device=device)
 
     for img_name in os.listdir(args.src):
         raw_img_path = os.path.join(args.src, img_name)
