@@ -11,6 +11,7 @@ from dataset.BFRestoreData import BFRestoreDataset
 from torch.utils.data import DataLoader
 
 from utils.train_utils import get_lmarks_from_tensor
+from utils.WLS import guidance_selection
 from models.ASFFNet import ASFFNet
 
 from torchvision.transforms.functional import normalize
@@ -85,12 +86,17 @@ for epoch in range(num_epochs):
 
         lq_image, hq_images, hq_lmarks, gt_image = lq_image_batch[0], hq_images_batch[0], hq_lmarks_batch[0], gt_image_batch[0]
 
-        lq_landmarks = get_lmarks_from_tensor(lq_image, FaceDetection)
-        if lq_landmarks is None:
+        # lq image landmark detection
+        lq_lmarks = get_lmarks_from_tensor(lq_image, FaceDetection)
+        if lq_lmarks is None:
             print(f'No landmarks found in lq image of training example {i}. Skipping...')
             continue
 
-        
+        # Guidance selection
+        hq_selected_idx = guidance_selection(lq_lmarks, hq_lmarks)
+
+        hq_selected_image = hq_images_batch[:, hq_selected_idx]
+        hq_selected_lmark = hq_lmarks_batch[:, hq_selected_idx]
 
 #         lq_imgs, id_imgs, lq_landmarks, id_landmarks = lq_imgs.to(device), id_imgs.to(device), lq_landmarks.to(device), id_landmarks.to(device)
 

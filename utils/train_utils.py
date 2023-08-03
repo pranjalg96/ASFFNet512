@@ -1,5 +1,3 @@
-import face_alignment
-import torch
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
@@ -36,16 +34,6 @@ def get_lmarks_from_tensor(image, FaceDetection):
 
     # Select the largest face (or the only one)
     face = faces[i]
-
-    lmark_image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-
-    for point in face[17:,0:2]:
-        cv2.circle(lmark_image, (int(point[0]), int(point[1])), 1, (0,255,0), 4)
-
-    disp_image = cv2.cvtColor(lmark_image, cv2.COLOR_BGR2RGB)
-
-    plt.imshow(disp_image)
-    plt.show()
 
     return face
 
