@@ -11,6 +11,7 @@ class BFRestoreDataset(Dataset):
         Initialize the dataset
         :param: data_dir - Directory that contains the dataset
 
+        returns
         """
         self.data_dir = data_dir
         self.image_list = self._load_image_list()
@@ -19,7 +20,8 @@ class BFRestoreDataset(Dataset):
         """
         Load a list of example folders from the dataset
 
-        returns - A list of example folders from the dataset
+        returns 
+        image_list -A list of example folders from the dataset
         """
         image_list = []
         for example_folder in os.listdir(self.data_dir):
@@ -35,7 +37,8 @@ class BFRestoreDataset(Dataset):
         :param: folder_path - Path to an example folder in train dataset
         :param: image_type - Type of image to load (lq or gt)
 
-        returns - A preprocessed batch of image tensor
+        returns
+        image - A preprocessed image tensor
         """
 
         folder_type = os.path.join(folder_path, image_type)
@@ -54,7 +57,9 @@ class BFRestoreDataset(Dataset):
         of each image is in a txt file with same name as the image
         :param: folder_path - Path to an example folder in train dataset
 
-        returns - Batch of tensors of preprocessed images and numpy array of corresponding landmarks
+        returns
+        batch_images - Batch of tensors of preprocessed images
+        batch_landmarks - Numpy array of corresponding landmarks
         """
 
         images = []
@@ -91,9 +96,24 @@ class BFRestoreDataset(Dataset):
         return batch_images, batch_landmarks
 
     def __len__(self):
+        """
+        Define length of dataset
+
+        """
         return len(self.image_list)
 
     def __getitem__(self, idx):
+        """
+        Define how to read and process an example from the dataset
+        :param: idx - Index of example 
+        
+        returns 
+        For example at index idx
+        lq_image -The processed low-quality image
+        hq_images - The processed high-quality images
+        hq_landmarks - high-quality image landmarks
+        gt_image - The preprocessed ground-truth image
+        """
         example_folder = self.image_list[idx]
         example_folder_path = os.path.join(self.data_dir, example_folder)
 

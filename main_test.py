@@ -178,5 +178,5 @@ if __name__ == '__main__':
         check_ref = check_ref.squeeze(0).permute(1, 2, 0).flip(2) # RGB->BGR
         check_ref = np.clip(check_ref.float().cpu().numpy(), 0, 1) * 255.0
         
-        cv2.imwrite(osp.join(save_path, osp.basename(lq_path)), np.hstack((check_lq, check_ref,save_out)))
+        # cv2.imwrite(osp.join(save_path, osp.basename(lq_path)), np.hstack((check_lq, check_ref,save_out)))
     

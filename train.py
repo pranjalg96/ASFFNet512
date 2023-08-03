@@ -7,10 +7,12 @@ import os
 import cv2
 import numpy as np
 
-from torch.utils.data import DataLoader
 from dataset.BFRestoreData import BFRestoreDataset
+from torch.utils.data import DataLoader
 
+from utils.train_utils import get_lmarks_from_tensor
 from models.ASFFNet import ASFFNet
+
 from torchvision.transforms.functional import normalize
 import face_alignment
 
@@ -54,7 +56,7 @@ mse_loss = nn.MSELoss()
 # Training parameters
 batch_size = 1
 lr = 2e-4
-num_epochs = 100
+num_epochs = 1
 checkpoint_interval = 10
 lambda_mse = 1.0
 lambda_perc = 1.0
@@ -63,6 +65,7 @@ lambda_adv = 0.001
 
 # Create data loader
 train_dir = 'TrainExamples'
+
 train_dataset = BFRestoreDataset(data_dir=train_dir)
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=False)
 
@@ -73,12 +76,19 @@ asffnet = ASFFNet().to(device)
 optimizer_G = optim.Adam(asffnet.parameters(), lr=lr)
 optimizer_D = optim.Adam(asffnet.parameters(), lr=lr)
 
-import matplotlib.pyplot as plt
+# Load face detection module
+FaceDetection = face_alignment.FaceAlignment(face_alignment.LandmarksType.TWO_D, device='cuda' if torch.cuda.is_available() else 'cpu')
+
 # Start training
 for epoch in range(num_epochs):
     for i, (lq_image_batch, hq_images_batch, hq_lmarks_batch, gt_image_batch) in enumerate(train_loader):
 
         lq_image, hq_images, hq_lmarks, gt_image = lq_image_batch[0], hq_images_batch[0], hq_lmarks_batch[0], gt_image_batch[0]
+
+        lq_landmarks = get_lmarks_from_tensor(lq_image, FaceDetection)
+        if lq_landmarks is None:
+            print(f'No landmarks found in lq image of training example {i}. Skipping...')
+            continue
 
         
 
