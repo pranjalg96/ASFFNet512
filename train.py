@@ -12,14 +12,12 @@ from utils.losses import mse_loss, perceptual_loss, style_loss
 from models.ASFFNet import ASFFNet
 from models.SNGAN_disc import SNGANDiscriminator
 
-
-from torchvision.transforms.functional import normalize
 import face_alignment
 
 # Define arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', '--input_path', type=str, default='./TrainExamples', help='input path of dataset')
-parser.add_argument('-s', '--save_dir', type=str, default='./saved_models', help='save path of restoration result')
+parser.add_argument('-s', '--save_dir', type=str, default='./saved_models', help='save path of models')
 args = parser.parse_args()
 
 # Set device (GPU or CPU)
@@ -130,7 +128,7 @@ for epoch in range(num_epochs):
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         # Print progress
         if (i + 1) % report_interval == 0:
-            print(f"Epoch [{epoch+1}/{num_epochs}] Batch [{i+1}/{len(train_loader)}] ASFF_Loss: {total_asffnet_loss.item()} (MSE_Loss: {mse_loss_val.item()} Perc_Loss: {perc_loss_val.item()} Style_Loss: {style_loss_val.item()}) Disc_Loss: {d_total_loss.item()}")
+            print(f"Epoch [{epoch+1}/{num_epochs}] Batch [{i+1}/{len(train_loader)}] ASFF_Loss: {total_asffnet_loss.item()} (MSE_Loss: {mse_loss_val.item()} Perc_Loss: {perc_loss_val.item()} Style_Loss: {style_loss_val.item()} Adv_Loss: {adv_loss_val.item()}) Disc_Loss: {d_total_loss.item()}")
 
     # Save model checkpoints
     if (epoch + 1) % checkpoint_interval == 0:

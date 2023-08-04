@@ -1,4 +1,3 @@
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.nn.utils.spectral_norm as SpectralNorm
@@ -21,4 +20,4 @@ class SNGANDiscriminator(nn.Module):
         x = self.conv5(x)
         x = self.global_avg_pool(x)
         x = x.view(-1)
-        return torch.tanh(x)
+        return x
