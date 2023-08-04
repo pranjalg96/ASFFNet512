@@ -122,7 +122,7 @@ if __name__ == '__main__':
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     ASFFNet512 = ASFFNet().to(device)#
-    state_dict = torch.load('./saved_models/asffnet_epoch_5.pth')  # ./checkpoints/ASFFNet512.pth
+    state_dict = torch.load('./saved_models/asffnet_adv_epoch_10.pth')  # ./checkpoints/ASFFNet512.pth
     ASFFNet512.load_state_dict(state_dict)
     ASFFNet512.eval()
     num_params = 0
