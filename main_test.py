@@ -122,8 +122,8 @@ if __name__ == '__main__':
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     ASFFNet512 = ASFFNet().to(device)#
-    weights = torch.load('./checkpoints/ASFFNet512.pth') 
-    ASFFNet512.load_state_dict(weights['params'], strict=True)
+    state_dict = torch.load('./saved_models/asffnet_epoch_5.pth')  # ./checkpoints/ASFFNet512.pth
+    ASFFNet512.load_state_dict(state_dict)
     ASFFNet512.eval()
     num_params = 0
     for param in ASFFNet512.parameters():
@@ -178,5 +178,5 @@ if __name__ == '__main__':
         check_ref = check_ref.squeeze(0).permute(1, 2, 0).flip(2) # RGB->BGR
         check_ref = np.clip(check_ref.float().cpu().numpy(), 0, 1) * 255.0
         
-        # cv2.imwrite(osp.join(save_path, osp.basename(lq_path)), np.hstack((check_lq, check_ref,save_out)))
+        cv2.imwrite(osp.join(save_path, osp.basename(lq_path)), np.hstack((check_lq, check_ref,save_out)))
     
